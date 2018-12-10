@@ -2,6 +2,47 @@
 
 #this won't run if there are no "myfile.txt" and "arrayfile.txt" in the current directory
 
+function1 () {
+	md=-1	
+	exists=0
+	k=-1
+	
+	if [[ "$1" != \#* ]] 
+	then
+		if s=$(wget -q -O - $1)
+		then
+			echo > /dev/null
+		else
+			echo $1 'FAILED'
+		fi	
+
+		md=$(echo $s | md5sum | cut -d " " -f1) 
+		
+		for j in "${!Arr[@]}"        
+		do
+			if [[ "$1" == "$j" ]]
+			then
+				exists=1
+				k=$j
+			fi
+		done
+
+		if (( $exists==0 )) 
+		then
+			Arr[$1]=" $md"
+			((i++))
+			
+			echo $1 'INIT'
+		else
+			if [ "$md" != "$(echo ${Arr[j]} | cut -d' ' -f2)" ]
+			then
+				Arr[$1]=" $md"
+				echo "$1 already exists but is changed"
+			fi
+		fi	
+	fi
+}
+
 file="$PWD/myfile.txt"
 i=-1
 declare -A Arr
@@ -19,44 +60,7 @@ i=${#Arr[@]}					#if the array is populated we take its size and use it to add n
 
 while IFS= read -r line || [[ -n "$line" ]]
 do
-	md=-1	
-	exists=0
-	k=-1
-	
-	if [[ "$line" != \#* ]] 
-	then
-		if [[ s=$(wget -q -O - $line) & ]]
-		then
-			echo > /dev/null
-		else
-			echo $line 'FAILED'
-		fi	
-
-		md=$(echo $s | md5sum | cut -d " " -f1) &
-		
-		for j in "${!Arr[@]}"        
-		do
-			if [[ "$line" == "$j" ]]
-			then
-				exists=1
-				k=$j
-			fi
-		done
-
-		if (( $exists==0 )) 
-		then
-			Arr[$line]=" $md"
-			((i++))
-			
-			echo $line 'INIT'
-		else
-			if [ "$md" != "$(echo ${Arr[j]} | cut -d' ' -f2)" ]
-			then
-				Arr[$line]=" $md"
-				echo "$line already exists but is changed"
-			fi
-		fi	
-	fi
+	function1 "$line" $
 done < "$file"
 
 #delete all contents of arrayfile.txt, so I can just append the whole array in an empty file
