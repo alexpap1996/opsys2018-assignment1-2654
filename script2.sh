@@ -21,7 +21,7 @@ done < <(find $dir/extractedfiles -name "*.txt" -print0)
 
 j=0
 for i in "${Arr[@]}" 	
-dof
+do
 	((j++))
 
 	found=0	
