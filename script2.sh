@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 user=$(pwd | cut -d '/' -f3)
 
 mkdir /home/$user/script2folder
@@ -14,7 +12,6 @@ mkdir $dir/Assignments
 
 #IT WON'T RUN IF THERE IS NO file.tar.gz as it is now
 tar -x -z -f file.tar.gz -C $dir/extractedfiles
-
 
 Arr=()
 while IFS=  read -r -d $'\0'
@@ -51,12 +48,10 @@ done
 #this saves the number of directories inside the Assignment directory
 nod=$(tree -L 1 "$dir/Assignments" | tail -1 | cut -d ' ' -f1)
 
-
 k=1		
 ((nod++)) 		#starting from k=1 so this needs to be bigger by 1 to loop the proper amount of times, also doesn't enter loop if nod=0
 while [[ $k -ne $nod ]]
-do
-	
+do	
 	temp=$(tree -i -f --noreport --dirsfirst "$dir/Assignments/repo$k")
 	tree1=$(echo "$temp" | tr '\n' ' ' ) #can't use cut with newlines so replacing them with spaces
 
@@ -81,7 +76,3 @@ do
 	fi
 	((k++))
 done
-
-
-
-
